@@ -25,6 +25,8 @@ class MainWindow(QWidget):
         super().__init__()
         self.setWindowTitle("ClefTrainer")
 
+        self.setWindowIcon(QIcon('ct-icon.png'))
+
         pageLayout = QVBoxLayout(self)
         buttonLayout = QHBoxLayout(self)
         self.imageStack = QStackedWidget(self)
