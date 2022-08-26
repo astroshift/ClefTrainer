@@ -1,17 +1,16 @@
 # ------------------------------------------------
 # Bass Clef (Treble soon) Training Application
-
 # Take images from folder and then quiz user
-# Add input for rounds played and scoring system
-# Include option for Treble Clef
 
-
+import os
 import sys
 import random
+
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import (
-    QLabel,
+    QMainWindow,
     QWidget,
+    QLabel,
     QApplication,
     QVBoxLayout,
     QPushButton,
@@ -19,13 +18,23 @@ from PyQt6.QtWidgets import (
     QStackedWidget,
 )
 
+bundle_dir = os.path.dirname(__file__)
 
-class MainWindow(QWidget):
+try:
+    from ctypes import windll
+    myappid = u'mycompany.myproduct.subproduct.version'
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except ImportError:
+    pass
+
+
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("ClefTrainer")
 
-        self.setWindowIcon(QIcon('ct-icon.png'))
+        self.setWindowIcon(
+            QIcon(os.path.join(bundle_dir, 'icons', 'ct-icon.png')))
 
         pageLayout = QVBoxLayout(self)
         buttonLayout = QHBoxLayout(self)
@@ -52,7 +61,7 @@ class MainWindow(QWidget):
 
         # iterate image list and add to stack
         for loc in self.note_list:
-            pixmap = QPixmap(loc)
+            pixmap = QPixmap(os.path.join(bundle_dir, loc))
             image = QLabel(self)
             image.setPixmap(pixmap)
             image.setScaledContents(True)
@@ -68,6 +77,11 @@ class MainWindow(QWidget):
         self.note_num = None
         self.generate_note()
 
+        container = QWidget()
+        container.setLayout(pageLayout)
+
+        self.setCentralWidget(container)
+        self.show()
 
     def button_pressed(self):
         sending_button = self.sender()
@@ -80,9 +94,7 @@ class MainWindow(QWidget):
         self.imageStack.setCurrentIndex(self.note_num)
 
 
-app = QApplication(sys.argv)
-
-window = MainWindow()
-window.show()
-
-app.exec()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    app.exec()
